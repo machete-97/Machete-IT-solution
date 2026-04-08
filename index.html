@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machete IT Solution</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+html,body{margin:0;padding:0;height:100%;scroll-behavior:smooth}
+*{box-sizing:border-box}
+
+:root{--bg:#0a0e1a;--surface:#0f1629;--accent:#00b4ff;--accent2:#6366f1;--text:#e2e8f0;--white:#ffffff}
+
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)}
+
+.circuit-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.circuit-line{position:absolute;background:linear-gradient(90deg,transparent,var(--accent),transparent);height:1px;opacity:.12;animation:circuitFlow linear infinite}
+.circuit-line-v{position:absolute;background:linear-gradient(180deg,transparent,var(--accent),transparent);width:1px;opacity:.1;animation:circuitFlowV linear infinite}
+@keyframes circuitFlow{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+@keyframes circuitFlowV{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}
+
+.glow-dot{position:absolute;width:4px;height:4px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent),0 0 20px var(--accent);opacity:.3;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.6;transform:scale(1.5)}}
+
+.glass{background:rgba(15,22,41,.7);backdrop-filter:blur(16px);border:1px solid rgba(0,180,255,.12);border-radius:16px;transition:all .35s ease}
+.glass:hover{border-color:rgba(0,180,255,.35);box-shadow:0 0 30px rgba(0,180,255,.08);transform:translateY(-4px)}
+
+.glow-text{text-shadow:0 0 40px rgba(0,180,255,.3),0 0 80px rgba(0,180,255,.1)}
+
+.btn-neon{background:linear-gradient(135deg,#00b4ff,#6366f1);padding:14px 32px;border-radius:50px;color:#fff;font-weight:600;font-size:16px;border:none;cursor:pointer;transition:all .3s ease;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-neon:hover{box-shadow:0 0 30px rgba(0,180,255,.4);transform:translateY(-2px)}
+.btn-outline{background:transparent;border:2px solid rgba(0,180,255,.5);padding:12px 30px;border-radius:50px;color:#00b4ff;font-weight:600;font-size:16px;cursor:pointer;transition:all .3s ease;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-outline:hover{background:rgba(0,180,255,.1);border-color:#00b4ff;box-shadow:0 0 20px rgba(0,180,255,.2)}
+
+.wa-float{position:fixed;bottom:24px;right:24px;z-index:999;width:60px;height:60px;background:linear-gradient(135deg,#25d366,#128c7e);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);animation:waBounce 2s ease-in-out infinite;cursor:pointer;text-decoration:none}
+@keyframes waBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.fade-section{opacity:0;transform:translateY(30px);transition:all .7s ease}
+.fade-section.visible{opacity:1;transform:translateY(0)}
+
+.star{color:#fbbf24}
+
+.nav-blur{background:rgba(10,14,26,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,180,255,.1)}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+.service-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(0,180,255,.15),rgba(99,102,241,.15));margin-bottom:16px}
+.service-icon i{width:28px;height:28px;color:#00b4ff}
+
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero-float{animation:heroFloat 4s ease-in-out infinite}
+
+.form-input{background:rgba(15,22,41,.8);border:1px solid rgba(0,180,255,.2);border-radius:10px;padding:12px 16px;color:#e2e8f0;font-family:'Outfit',sans-serif;font-size:15px;width:100%;transition:border-color .3s}
+.form-input:focus{outline:none;border-color:#00b4ff;box-shadow:0 0 12px rgba(0,180,255,.15)}
+.form-input::placeholder{color:rgba(226,232,240,.35)}
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="w-full" style="height:100%;overflow-y:auto;overflow-x:hidden"><!-- Circuit BG -->
+   <div class="circuit-bg" aria-hidden="true" id="circuit-container"></div><!-- NAV -->
+   <nav class="nav-blur fixed top-0 left-0 w-full z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between"><a href="#hero" class="flex items-center gap-2 text-white font-bold text-xl" style="font-family:'Space Mono',monospace"> <span style="color:#00b4ff">⚡</span> MACHETE </a>
+     <div class="hidden md:flex items-center gap-8"><a href="#about" class="text-sm text-slate-300 hover:text-cyan-400 transition">About</a> <a href="#services" class="text-sm text-slate-300 hover:text-cyan-400 transition">Services</a> <a href="#why" class="text-sm text-slate-300 hover:text-cyan-400 transition">Why Us</a> <a href="#testimonials" class="text-sm text-slate-300 hover:text-cyan-400 transition">Reviews</a> <a href="#contact" class="btn-neon" style="padding:10px 24px;font-size:14px">Get Support</a>
+     </div><button id="mobile-menu-btn" class="md:hidden text-white"><i data-lucide="menu" style="width:28px;height:28px"></i></button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 flex flex-col gap-3"><a href="#about" class="text-slate-300 py-2 border-b border-slate-800">About</a> <a href="#services" class="text-slate-300 py-2 border-b border-slate-800">Services</a> <a href="#why" class="text-slate-300 py-2 border-b border-slate-800">Why Us</a> <a href="#testimonials" class="text-slate-300 py-2 border-b border-slate-800">Reviews</a> <a href="#contact" class="text-cyan-400 py-2 font-semibold">Get Support</a>
+    </div>
+   </nav><!-- HERO -->
+   <section id="hero" class="relative min-h-screen flex items-center justify-center pt-20 px-6" style="min-height:100%">
+    <div class="max-w-6xl mx-auto text-center relative z-10"><!-- Floating tech icons -->
+     <div class="hero-float absolute -top-4 left-8 opacity-20 hidden lg:block">
+      <i data-lucide="laptop" style="width:48px;height:48px;color:#00b4ff"></i>
+     </div>
+     <div class="hero-float absolute top-20 right-12 opacity-20 hidden lg:block" style="animation-delay:.5s">
+      <i data-lucide="smartphone" style="width:36px;height:36px;color:#6366f1"></i>
+     </div>
+     <div class="hero-float absolute bottom-20 left-16 opacity-15 hidden lg:block" style="animation-delay:1s">
+      <i data-lucide="cloud" style="width:44px;height:44px;color:#00b4ff"></i>
+     </div>
+     <div class="hero-float absolute bottom-10 right-20 opacity-15 hidden lg:block" style="animation-delay:1.5s">
+      <i data-lucide="book-open" style="width:40px;height:40px;color:#6366f1"></i>
+     </div>
+     <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/20 bg-cyan-500/5 mb-8"><span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span> <span class="text-cyan-400 text-sm font-medium">Available 24/7 on WhatsApp</span>
+     </div>
+     <h1 id="hero-heading" class="text-5xl md:text-7xl lg:text-8xl font-black text-white glow-text mb-6 leading-tight" style="font-family:'Space Mono',monospace;letter-spacing:-2px">MACHETE<br>
+      IT SOLUTION</h1>
+     <p id="hero-subheading" class="text-lg md:text-2xl text-cyan-300/80 font-light mb-6 max-w-2xl mx-auto">Fast, Reliable &amp; Affordable IT and Academic Services</p>
+     <p class="text-slate-400 max-w-xl mx-auto mb-10 leading-relaxed">We provide expert technical support, software installation, device troubleshooting, student academic assistance, project guidance, and digital learning materials.</p>
+     <div class="flex flex-col sm:flex-row items-center justify-center gap-4"><a href="#contact" class="btn-neon"><i data-lucide="headphones" style="width:20px;height:20px"></i> Get Support Now</a> <a href="https://wa.me/27818485311" target="_blank" rel="noopener noreferrer" class="btn-outline"><i data-lucide="message-circle" style="width:20px;height:20px"></i> Contact on WhatsApp</a>
+     </div>
+    </div>
+   </section><!-- ABOUT -->
+   <section id="about" class="fade-section relative z-10 py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+     <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div><span class="text-cyan-400 font-semibold text-sm tracking-widest uppercase mb-4 block">About Us</span>
+       <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Your Trusted Technical<br><span style="color:#00b4ff">Support Partner</span></h2>
+       <p id="about-text" class="text-slate-400 leading-relaxed text-lg">Machete IT Solution is dedicated to providing reliable technical support services and academic assistance to students and professionals. From laptop troubleshooting to project guidance and study materials, we deliver fast and affordable solutions.</p>
+       <div class="grid grid-cols-3 gap-6 mt-10">
+        <div class="text-center">
+         <div class="text-3xl font-bold text-white">
+          500+
+         </div>
+         <div class="text-slate-500 text-sm">
+          Clients Served
+         </div>
+        </div>
+        <div class="text-center">
+         <div class="text-3xl font-bold text-white">
+          24/7
+         </div>
+         <div class="text-slate-500 text-sm">
+          Support
+         </div>
+        </div>
+        <div class="text-center">
+         <div class="text-3xl font-bold text-white">
+          99%
+         </div>
+         <div class="text-slate-500 text-sm">
+          Satisfaction
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="glass p-8 text-center">
+       <div class="grid grid-cols-2 gap-4">
+        <div class="glass p-4">
+         <i data-lucide="laptop" style="width:32px;height:32px;color:#00b4ff;margin:0 auto 8px"></i><span class="text-slate-300 text-sm block">PC Support</span>
+        </div>
+        <div class="glass p-4">
+         <i data-lucide="smartphone" style="width:32px;height:32px;color:#6366f1;margin:0 auto 8px"></i><span class="text-slate-300 text-sm block">Phone Setup</span>
+        </div>
+        <div class="glass p-4">
+         <i data-lucide="book-open" style="width:32px;height:32px;color:#00b4ff;margin:0 auto 8px"></i><span class="text-slate-300 text-sm block">Academics</span>
+        </div>
+        <div class="glass p-4">
+         <i data-lucide="file-text" style="width:32px;height:32px;color:#6366f1;margin:0 auto 8px"></i><span class="text-slate-300 text-sm block">Study Materials</span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- SERVICES -->
+   <section id="services" class="fade-section relative z-10 py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16"><span class="text-cyan-400 font-semibold text-sm tracking-widest uppercase mb-4 block">Our Services</span>
+      <h2 class="text-3xl md:text-5xl font-bold text-white">What We <span style="color:#00b4ff">Offer</span></h2>
+     </div><!-- Technical Support -->
+     <h3 class="text-xl font-semibold text-white mb-6 flex items-center gap-2"><i data-lucide="settings" style="width:22px;height:22px;color:#00b4ff"></i> Technical Support</h3>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="laptop"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Laptop &amp; PC Troubleshooting</h4>
+       <p class="text-slate-400 text-sm">Diagnose and fix hardware and software issues quickly.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="download"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Software Installation</h4>
+       <p class="text-slate-400 text-sm">Install and configure any software you need.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="smartphone"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Phone Setup &amp; Support</h4>
+       <p class="text-slate-400 text-sm">Full setup and troubleshooting for mobile devices.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="wifi"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Network / Wi-Fi Issues</h4>
+       <p class="text-slate-400 text-sm">Resolve connectivity and network configuration problems.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="printer"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Printer Setup</h4>
+       <p class="text-slate-400 text-sm">Install drivers and configure printers seamlessly.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="message-circle"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">IT Consultation</h4>
+       <p class="text-slate-400 text-sm">Expert advice for your technology needs.</p>
+      </div>
+     </div><!-- Academic -->
+     <h3 class="text-xl font-semibold text-white mb-6 flex items-center gap-2"><i data-lucide="graduation-cap" style="width:22px;height:22px;color:#6366f1"></i> Student Academic Assistance</h3>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="edit"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">College Assignments Support</h4>
+       <p class="text-slate-400 text-sm">Professional help with your academic assignments.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="target"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Project Guidance</h4>
+       <p class="text-slate-400 text-sm">End-to-end guidance for your academic projects.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="search"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Research Assistance</h4>
+       <p class="text-slate-400 text-sm">Support with research methodology and writing.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="file-text"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Document Formatting</h4>
+       <p class="text-slate-400 text-sm">Professional formatting for all academic documents.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="monitor"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Presentation Design</h4>
+       <p class="text-slate-400 text-sm">Create stunning presentations that impress.</p>
+      </div>
+     </div><!-- Digital Materials -->
+     <h3 class="text-xl font-semibold text-white mb-6 flex items-center gap-2"><i data-lucide="book-open" style="width:22px;height:22px;color:#00b4ff"></i> Digital Learning Materials</h3>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="file-text"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">PDF Varsity Books</h4>
+       <p class="text-slate-400 text-sm">Access digital textbooks for your studies.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="book-open"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">College Textbooks</h4>
+       <p class="text-slate-400 text-sm">Wide range of college-level materials available.</p>
+      </div>
+      <div class="glass p-6">
+       <div class="service-icon">
+        <i data-lucide="bookmark"></i>
+       </div>
+       <h4 class="text-white font-semibold mb-2">Study Guides &amp; Course Materials</h4>
+       <p class="text-slate-400 text-sm">Any model, any subject — we've got you covered.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- WHY CHOOSE US -->
+   <section id="why" class="fade-section relative z-10 py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16"><span class="text-cyan-400 font-semibold text-sm tracking-widest uppercase mb-4 block">Why Choose Us</span>
+      <h2 class="text-3xl md:text-5xl font-bold text-white">Built on <span style="color:#00b4ff">Trust</span></h2>
+     </div>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass p-8 text-center">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,rgba(0,180,255,.2),rgba(99,102,241,.2))">
+        <i data-lucide="zap" style="width:28px;height:28px;color:#00b4ff"></i>
+       </div>
+       <h4 class="text-white font-semibold text-lg mb-2">Fast Service</h4>
+       <p class="text-slate-400 text-sm">Quick turnaround on all requests.</p>
+      </div>
+      <div class="glass p-8 text-center">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,rgba(0,180,255,.2),rgba(99,102,241,.2))">
+        <i data-lucide="shield" style="width:28px;height:28px;color:#00b4ff"></i>
+       </div>
+       <h4 class="text-white font-semibold text-lg mb-2">Reliable Support</h4>
+       <p class="text-slate-400 text-sm">Consistent, dependable solutions.</p>
+      </div>
+      <div class="glass p-8 text-center">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,rgba(0,180,255,.2),rgba(99,102,241,.2))">
+        <i data-lucide="tag" style="width:28px;height:28px;color:#00b4ff"></i>
+       </div>
+       <h4 class="text-white font-semibold text-lg mb-2">Affordable Pricing</h4>
+       <p class="text-slate-400 text-sm">Quality service that fits your budget.</p>
+      </div>
+      <div class="glass p-8 text-center">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,rgba(0,180,255,.2),rgba(99,102,241,.2))">
+        <i data-lucide="message-circle" style="width:28px;height:28px;color:#00b4ff"></i>
+       </div>
+       <h4 class="text-white font-semibold text-lg mb-2">24/7 WhatsApp</h4>
+       <p class="text-slate-400 text-sm">Reach us anytime, anywhere.</p>
+      </div>
+      <div class="glass p-8 text-center">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,rgba(0,180,255,.2),rgba(99,102,241,.2))">
+        <i data-lucide="award" style="width:28px;height:28px;color:#00b4ff"></i>
+       </div>
+       <h4 class="text-white font-semibold text-lg mb-2">Expert Assistance</h4>
+       <p class="text-slate-400 text-sm">Skilled professionals at your service.</p>
+      </div>
+      <div class="glass p-8 text-center">
+       <div class="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,rgba(0,180,255,.2),rgba(99,102,241,.2))">
+        <i data-lucide="heart" style="width:28px;height:28px;color:#00b4ff"></i>
+       </div>
+       <h4 class="text-white font-semibold text-lg mb-2">Student Friendly</h4>
+       <p class="text-slate-400 text-sm">We understand student needs and budgets.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- TESTIMONIALS -->
+   <section id="testimonials" class="fade-section relative z-10 py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16"><span class="text-cyan-400 font-semibold text-sm tracking-widest uppercase mb-4 block">Testimonials</span>
+      <h2 class="text-3xl md:text-5xl font-bold text-white">What Clients <span style="color:#00b4ff">Say</span></h2>
+     </div>
+     <div class="grid md:grid-cols-3 gap-6">
+      <div class="glass p-8">
+       <div class="flex gap-1 mb-4">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+       </div>
+       <p class="text-slate-300 mb-6 italic">"Excellent laptop repair service and very fast. Had my laptop back the same day!"</p>
+       <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background:linear-gradient(135deg,#00b4ff,#6366f1)">
+         T
+        </div>
+        <div>
+         <div class="text-white font-semibold text-sm">
+          Thabo M.
+         </div>
+         <div class="text-slate-500 text-xs">
+          Student
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="glass p-8">
+       <div class="flex gap-1 mb-4">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+       </div>
+       <p class="text-slate-300 mb-6 italic">"Helped me finish my assignment professionally. Highly recommended for all students!"</p>
+       <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background:linear-gradient(135deg,#6366f1,#00b4ff)">
+         L
+        </div>
+        <div>
+         <div class="text-white font-semibold text-sm">
+          Lerato K.
+         </div>
+         <div class="text-slate-500 text-xs">
+          University Student
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="glass p-8">
+       <div class="flex gap-1 mb-4">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+       </div>
+       <p class="text-slate-300 mb-6 italic">"Best affordable IT support in town. Professional, quick, and friendly service."</p>
+       <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background:linear-gradient(135deg,#00b4ff,#6366f1)">
+         S
+        </div>
+        <div>
+         <div class="text-white font-semibold text-sm">
+          Sipho N.
+         </div>
+         <div class="text-slate-500 text-xs">
+          Small Business Owner
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- CONTACT -->
+   <section id="contact" class="fade-section relative z-10 py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16"><span class="text-cyan-400 font-semibold text-sm tracking-widest uppercase mb-4 block">Contact Us</span>
+      <h2 class="text-3xl md:text-5xl font-bold text-white">Get In <span style="color:#00b4ff">Touch</span></h2>
+     </div>
+     <div class="grid md:grid-cols-2 gap-10">
+      <div>
+       <div class="glass p-8 mb-6">
+        <h3 class="text-white font-semibold text-lg mb-6">Contact Information</h3>
+        <div class="space-y-5">
+         <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:rgba(0,180,255,.15)">
+           <i data-lucide="phone" style="width:20px;height:20px;color:#00b4ff"></i>
+          </div>
+          <div>
+           <div class="text-slate-500 text-xs">
+            Phone
+           </div>
+           <div id="contact-phone" class="text-white">
+            081 848 5311
+           </div>
+          </div>
+         </div>
+         <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:rgba(37,211,102,.15)">
+           <i data-lucide="message-circle" style="width:20px;height:20px;color:#25d366"></i>
+          </div>
+          <div>
+           <div class="text-slate-500 text-xs">
+            WhatsApp
+           </div>
+           <div class="text-white">
+            081 848 5311
+           </div>
+          </div>
+         </div>
+         <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:rgba(0,180,255,.15)">
+           <i data-lucide="mail" style="width:20px;height:20px;color:#00b4ff"></i>
+          </div>
+          <div>
+           <div class="text-slate-500 text-xs">
+            Email
+           </div>
+           <div id="contact-email" class="text-white text-sm">
+            kgothatso.machete@outlook.com
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="glass p-8">
+       <h3 class="text-white font-semibold text-lg mb-6">Send a Message</h3>
+       <form id="contact-form" class="space-y-4">
+        <div>
+         <label for="fname" class="text-slate-400 text-sm mb-1 block">Full Name</label><input id="fname" type="text" class="form-input" placeholder="Your full name" required>
+        </div>
+        <div>
+         <label for="fphone" class="text-slate-400 text-sm mb-1 block">Phone Number</label><input id="fphone" type="tel" class="form-input" placeholder="Your phone number" required>
+        </div>
+        <div>
+         <label for="femail" class="text-slate-400 text-sm mb-1 block">Email Address</label><input id="femail" type="email" class="form-input" placeholder="Your email address" required>
+        </div>
+        <div>
+         <label for="fservice" class="text-slate-400 text-sm mb-1 block">Service Needed</label><select id="fservice" class="form-input" required> <option value="">Select a service</option> <option>Laptop &amp; PC Troubleshooting</option> <option>Software Installation</option> <option>Phone Setup &amp; Support</option> <option>Network / Wi-Fi Issues</option> <option>College Assignments Support</option> <option>Project Guidance</option> <option>PDF Varsity Books</option> <option>Other</option> </select>
+        </div>
+        <div>
+         <label for="fmsg" class="text-slate-400 text-sm mb-1 block">Message</label><textarea id="fmsg" class="form-input" rows="4" placeholder="Describe what you need..." required></textarea>
+        </div><button type="submit" class="btn-neon w-full justify-center"><i data-lucide="send" style="width:18px;height:18px"></i> Submit Request</button>
+       </form>
+       <div id="form-success" class="hidden mt-4 p-4 rounded-xl text-center" style="background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.3)"><i data-lucide="check-circle" style="width:32px;height:32px;color:#00b4ff;margin:0 auto 8px;display:block"></i>
+        <p class="text-cyan-300 font-semibold">Request sent successfully!</p>
+        <p class="text-slate-400 text-sm">We have submitted your request and will contact you soon.</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- FOOTER -->
+   <footer class="relative z-10 border-t border-slate-800 py-12 px-6">
+    <div class="max-w-6xl mx-auto">
+     <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="text-center md:text-left">
+       <div class="text-white font-bold text-lg mb-1" style="font-family:'Space Mono',monospace">
+        <span style="color:#00b4ff">⚡</span> MACHETE IT SOLUTION
+       </div>
+       <p class="text-slate-500 text-sm">Your Trusted Technical Support &amp; Academic Assistance Partner</p>
+      </div>
+      <div class="flex items-center gap-4"><a href="#" class="w-10 h-10 rounded-full flex items-center justify-center glass hover:border-cyan-400" aria-label="Facebook"><i data-lucide="facebook" style="width:18px;height:18px;color:#00b4ff"></i></a> <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center glass hover:border-cyan-400" aria-label="Instagram"><i data-lucide="instagram" style="width:18px;height:18px;color:#00b4ff"></i></a> <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center glass hover:border-cyan-400" aria-label="LinkedIn"><i data-lucide="linkedin" style="width:18px;height:18px;color:#00b4ff"></i></a> <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center glass hover:border-cyan-400" aria-label="Twitter"><i data-lucide="twitter" style="width:18px;height:18px;color:#00b4ff"></i></a> <a href="https://wa.me/27818485311" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full flex items-center justify-center glass hover:border-green-400" aria-label="WhatsApp"><i data-lucide="message-circle" style="width:18px;height:18px;color:#25d366"></i></a>
+      </div>
+     </div>
+     <div class="text-center mt-8 pt-8 border-t border-slate-800">
+      <p id="footer-text" class="text-slate-500 text-sm">© 2026 Machete IT Solution. All Rights Reserved.</p>
+     </div>
+    </div>
+   </footer><!-- Floating WhatsApp --> <a href="https://wa.me/27818485311" target="_blank" rel="noopener noreferrer" class="wa-float" aria-label="Chat on WhatsApp">
+    <svg width="32" height="32" viewbox="0 0 24 24" fill="white">
+     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" /><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.344 0-4.507-.794-6.23-2.13l-.44-.344-2.655.89.89-2.655-.344-.44A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+    </svg></a>
+  </div>
+  <script>
+// Default config
+const defaultConfig = {
+  hero_heading: 'MACHETE\nIT SOLUTION',
+  hero_subheading: 'Fast, Reliable & Affordable IT and Academic Services',
+  about_text: 'Machete IT Solution is dedicated to providing reliable technical support services and academic assistance to students and professionals. From laptop troubleshooting to project guidance and study materials, we deliver fast and affordable solutions.',
+  contact_phone: '081 848 5311',
+  contact_email: 'kgothatso.machete@outlook.com',
+  footer_text: '© 2026 Machete IT Solution. All Rights Reserved.',
+  background_color: '#0a0e1a',
+  surface_color: '#0f1629',
+  text_color: '#e2e8f0',
+  accent_color: '#00b4ff',
+  accent2_color: '#6366f1',
+  font_family: 'Outfit',
+  font_size: 16
+};
+
+function applyConfig(config) {
+  const h = document.getElementById('hero-heading');
+  if (h) { const txt = config.hero_heading || defaultConfig.hero_heading; h.innerHTML = txt.replace('\n','<br>'); }
+  const hs = document.getElementById('hero-subheading');
+  if (hs) hs.textContent = config.hero_subheading || defaultConfig.hero_subheading;
+  const at = document.getElementById('about-text');
+  if (at) at.textContent = config.about_text || defaultConfig.about_text;
+  const cp = document.getElementById('contact-phone');
+  if (cp) cp.textContent = config.contact_phone || defaultConfig.contact_phone;
+  const ce = document.getElementById('contact-email');
+  if (ce) ce.textContent = config.contact_email || defaultConfig.contact_email;
+  const ft = document.getElementById('footer-text');
+  if (ft) ft.textContent = config.footer_text || defaultConfig.footer_text;
+
+  const bg = config.background_color || defaultConfig.background_color;
+  const surface = config.surface_color || defaultConfig.surface_color;
+  const text = config.text_color || defaultConfig.text_color;
+  const accent = config.accent_color || defaultConfig.accent_color;
+  const accent2 = config.accent2_color || defaultConfig.accent2_color;
+
+  document.documentElement.style.setProperty('--bg', bg);
+  document.documentElement.style.setProperty('--surface', surface);
+  document.documentElement.style.setProperty('--text', text);
+  document.documentElement.style.setProperty('--accent', accent);
+  document.documentElement.style.setProperty('--accent2', accent2);
+  document.body.style.background = bg;
+  document.body.style.color = text;
+
+  const font = config.font_family || defaultConfig.font_family;
+  const baseSize = config.font_size || defaultConfig.font_size;
+  document.body.style.fontFamily = `${font}, Outfit, sans-serif`;
+  document.body.style.fontSize = `${baseSize}px`;
+  if (h) h.style.fontFamily = `Space Mono, ${font}, monospace`;
+}
+
+// Element SDK init
+if (window.elementSdk) {
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => { applyConfig(config); },
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); }},
+        { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); }},
+        { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); }},
+        { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); }},
+        { get: () => config.accent2_color || defaultConfig.accent2_color, set: (v) => { config.accent2_color = v; window.elementSdk.setConfig({ accent2_color: v }); }}
+      ],
+      borderables: [],
+      fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }},
+      fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }}
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['hero_heading', config.hero_heading || defaultConfig.hero_heading],
+      ['hero_subheading', config.hero_subheading || defaultConfig.hero_subheading],
+      ['about_text', config.about_text || defaultConfig.about_text],
+      ['contact_phone', config.contact_phone || defaultConfig.contact_phone],
+      ['contact_email', config.contact_email || defaultConfig.contact_email],
+      ['footer_text', config.footer_text || defaultConfig.footer_text]
+    ])
+  });
+}
+
+// Circuit background generation
+(function() {
+  const c = document.getElementById('circuit-container');
+  for (let i = 0; i < 12; i++) {
+    const line = document.createElement('div');
+    line.className = 'circuit-line';
+    line.style.top = `${Math.random() * 100}%`;
+    line.style.left = '0';
+    line.style.width = `${30 + Math.random() * 40}%`;
+    line.style.animationDuration = `${6 + Math.random() * 8}s`;
+    line.style.animationDelay = `${Math.random() * 5}s`;
+    c.appendChild(line);
+  }
+  for (let i = 0; i < 8; i++) {
+    const line = document.createElement('div');
+    line.className = 'circuit-line-v';
+    line.style.left = `${Math.random() * 100}%`;
+    line.style.top = '0';
+    line.style.height = `${20 + Math.random() * 30}%`;
+    line.style.animationDuration = `${8 + Math.random() * 10}s`;
+    line.style.animationDelay = `${Math.random() * 5}s`;
+    c.appendChild(line);
+  }
+  for (let i = 0; i < 20; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'glow-dot';
+    dot.style.top = `${Math.random() * 100}%`;
+    dot.style.left = `${Math.random() * 100}%`;
+    dot.style.animationDelay = `${Math.random() * 4}s`;
+    c.appendChild(dot);
+  }
+})();
+
+// Mobile menu
+document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('hidden');
+});
+document.querySelectorAll('#mobile-menu a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('mobile-menu').classList.add('hidden'));
+});
+
+// Form handling
+const ownerWhatsApp = '27818485311';
+const ownerEmail = 'kgothatso.machete@outlook.com';
+const form = document.getElementById('contact-form');
+const successBox = document.getElementById('form-success');
+function openWhatsAppFallback(name, phone, email, service, message) {
+  const body = `New request from ${name}\nPhone: ${phone}\nEmail: ${email}\nService: ${service}\nMessage: ${message}`;
+  const url = `https://wa.me/${ownerWhatsApp}?text=${encodeURIComponent(body)}`;
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+function openEmailFallback(name, phone, email, service, message) {
+  const subject = 'New Machete IT Support Request';
+  const body = `Name: ${name}\nPhone: ${phone}\nEmail: ${email}\nService: ${service}\nMessage: ${message}`;
+  const mailto = `mailto:${ownerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const link = document.createElement('a');
+  link.href = mailto;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('fname').value.trim();
+  const phone = document.getElementById('fphone').value.trim();
+  const email = document.getElementById('femail').value.trim();
+  const service = document.getElementById('fservice').value;
+  const message = document.getElementById('fmsg').value.trim();
+
+  if (!name || !phone || !email || !service || !message) {
+    return;
+  }
+
+  form.querySelector('button[type="submit"]').disabled = true;
+
+  try {
+    const response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, email, service, message })
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Unable to send request.');
+    }
+
+    if (data.whatsappUrl) {
+      window.open(data.whatsappUrl, '_blank', 'noopener,noreferrer');
+    }
+
+    form.classList.add('hidden');
+    successBox.classList.remove('hidden');
+    lucide.createIcons();
+
+    setTimeout(() => {
+      form.reset();
+      form.classList.remove('hidden');
+      successBox.classList.add('hidden');
+    }, 4000);
+  } catch (error) {
+    console.error(error);
+    openWhatsAppFallback(name, phone, email, service, message);
+    openEmailFallback(name, phone, email, service, message);
+    form.classList.add('hidden');
+    successBox.classList.remove('hidden');
+    lucide.createIcons();
+
+    setTimeout(() => {
+      form.reset();
+      form.classList.remove('hidden');
+      successBox.classList.add('hidden');
+    }, 4000);
+  } finally {
+    form.querySelector('button[type="submit"]').disabled = false;
+  }
+});
+
+// Scroll fade-in
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-section').forEach(el => observer.observe(el));
+
+// Init Lucide
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8338ce40903e9a',t:'MTc3NTUwMzk4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e;b;'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
